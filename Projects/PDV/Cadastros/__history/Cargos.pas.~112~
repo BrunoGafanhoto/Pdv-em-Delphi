@@ -1,0 +1,287 @@
+{$A8,B-,C+,D+,E-,F-,G+,H+,I+,J-,K-,L+,M-,N-,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+{$MINSTACKSIZE $00004000}
+{$MAXSTACKSIZE $00100000}
+{$IMAGEBASE $00400000}
+{$APPTYPE GUI}
+{$WARN SYMBOL_DEPRECATED ON}
+{$WARN SYMBOL_LIBRARY ON}
+{$WARN SYMBOL_PLATFORM ON}
+{$WARN SYMBOL_EXPERIMENTAL ON}
+{$WARN UNIT_LIBRARY ON}
+{$WARN UNIT_PLATFORM ON}
+{$WARN UNIT_DEPRECATED ON}
+{$WARN UNIT_EXPERIMENTAL ON}
+{$WARN HRESULT_COMPAT ON}
+{$WARN HIDING_MEMBER ON}
+{$WARN HIDDEN_VIRTUAL ON}
+{$WARN GARBAGE ON}
+{$WARN BOUNDS_ERROR ON}
+{$WARN ZERO_NIL_COMPAT ON}
+{$WARN STRING_CONST_TRUNCED ON}
+{$WARN FOR_LOOP_VAR_VARPAR ON}
+{$WARN TYPED_CONST_VARPAR ON}
+{$WARN ASG_TO_TYPED_CONST ON}
+{$WARN CASE_LABEL_RANGE ON}
+{$WARN FOR_VARIABLE ON}
+{$WARN CONSTRUCTING_ABSTRACT ON}
+{$WARN COMPARISON_FALSE ON}
+{$WARN COMPARISON_TRUE ON}
+{$WARN COMPARING_SIGNED_UNSIGNED ON}
+{$WARN COMBINING_SIGNED_UNSIGNED ON}
+{$WARN UNSUPPORTED_CONSTRUCT ON}
+{$WARN FILE_OPEN ON}
+{$WARN FILE_OPEN_UNITSRC ON}
+{$WARN BAD_GLOBAL_SYMBOL ON}
+{$WARN DUPLICATE_CTOR_DTOR ON}
+{$WARN INVALID_DIRECTIVE ON}
+{$WARN PACKAGE_NO_LINK ON}
+{$WARN PACKAGED_THREADVAR ON}
+{$WARN IMPLICIT_IMPORT ON}
+{$WARN HPPEMIT_IGNORED ON}
+{$WARN NO_RETVAL ON}
+{$WARN USE_BEFORE_DEF ON}
+{$WARN FOR_LOOP_VAR_UNDEF ON}
+{$WARN UNIT_NAME_MISMATCH ON}
+{$WARN NO_CFG_FILE_FOUND ON}
+{$WARN IMPLICIT_VARIANTS ON}
+{$WARN UNICODE_TO_LOCALE ON}
+{$WARN LOCALE_TO_UNICODE ON}
+{$WARN IMAGEBASE_MULTIPLE ON}
+{$WARN SUSPICIOUS_TYPECAST ON}
+{$WARN PRIVATE_PROPACCESSOR ON}
+{$WARN UNSAFE_TYPE OFF}
+{$WARN UNSAFE_CODE OFF}
+{$WARN UNSAFE_CAST OFF}
+{$WARN OPTION_TRUNCATED ON}
+{$WARN WIDECHAR_REDUCED ON}
+{$WARN DUPLICATES_IGNORED ON}
+{$WARN UNIT_INIT_SEQ ON}
+{$WARN LOCAL_PINVOKE ON}
+{$WARN MESSAGE_DIRECTIVE ON}
+{$WARN TYPEINFO_IMPLICITLY_ADDED ON}
+{$WARN RLINK_WARNING ON}
+{$WARN IMPLICIT_STRING_CAST ON}
+{$WARN IMPLICIT_STRING_CAST_LOSS ON}
+{$WARN EXPLICIT_STRING_CAST OFF}
+{$WARN EXPLICIT_STRING_CAST_LOSS OFF}
+{$WARN CVT_WCHAR_TO_ACHAR ON}
+{$WARN CVT_NARROWING_STRING_LOST ON}
+{$WARN CVT_ACHAR_TO_WCHAR ON}
+{$WARN CVT_WIDENING_STRING_LOST ON}
+{$WARN NON_PORTABLE_TYPECAST ON}
+{$WARN XML_WHITESPACE_NOT_ALLOWED ON}
+{$WARN XML_UNKNOWN_ENTITY ON}
+{$WARN XML_INVALID_NAME_START ON}
+{$WARN XML_INVALID_NAME ON}
+{$WARN XML_EXPECTED_CHARACTER ON}
+{$WARN XML_CREF_NO_RESOLVE ON}
+{$WARN XML_NO_PARM ON}
+{$WARN XML_NO_MATCHING_PARM ON}
+{$WARN IMMUTABLE_STRINGS OFF}
+unit Cargos;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids,
+  Vcl.Buttons, Vcl.StdCtrls;
+
+type
+  TFrmCargos = class(TForm)
+    EdtNome: TEdit;
+    Label2: TLabel;
+    BtnNovo: TSpeedButton;
+    BtnExcluir: TSpeedButton;
+    BtnEditar: TSpeedButton;
+    grid: TDBGrid;
+    BtnSalvar: TSpeedButton;
+    procedure BtnNovoClick(Sender: TObject);
+    procedure BtnSalvarClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure gridCellClick(Column: TColumn);
+    procedure BtnEditarClick(Sender: TObject);
+    procedure BtnExcluirClick(Sender: TObject);
+    
+  private
+    { Private declarations }
+    procedure associarCampos;
+    procedure listar;
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmCargos: TFrmCargos;
+  id : string;
+
+implementation
+
+{$R *.dfm}
+
+uses Modulo;
+
+procedure TFrmCargos.associarCampos;
+begin
+dm.tb_Cargos.FieldByName('cargo').Value := EdtNome.Text;
+end;
+
+
+
+   //BOTÃO EDITAR
+procedure TFrmCargos.BtnEditarClick(Sender: TObject);
+var
+cargo : string;
+
+begin
+    if trim(EdtNome.text) = '' then
+    begin
+      MessageDlg('Preencha o Campo' , mtInformation, mbOKCancel,0);
+      EdtNome.SetFocus;
+      exit;
+    end;
+
+    //VERIFICAR SE O CARGO JA ESTÁ CADASTRADO
+    dm.query_cargos.Close;
+    dm.query_cargos.SQL.clear;
+    dm.query_cargos.SQL.Add('SELECT * FROM cargos where cargo = ' + QuotedStr(trim(EdtNome.text)));
+    dm.query_cargos.Open;
+
+    if not dm.query_cargos.IsEmpty then  // empty sem o not é pra verificar se o campo está vazio e com o not é pra verificar se tem valor
+    begin
+         cargo := dm.query_cargos['cargo'];
+      MessageDlg('O cargo ' + cargo + ' já existe no banco de Dados!', mtInformation, MbOKCancel,0);
+      EdtNome.Text := '';
+      EdtNome.SetFocus;
+      listar;
+      exit;
+    end;
+
+    associarCampos;
+    dm.query_cargos.Close;
+    dm.query_cargos.SQL.clear;
+    dm.query_cargos.SQL.Add('UPDATE cargos set cargo = :cargo where id = :id'); //update cargos onde cargo recebe um parametro que vou chamar de cargo e to passando o id para que ele não atualize tudo
+    dm.query_cargos.ParamByName('cargo').Value := EdtNome.Text; // informando os parametros a passar para cargo e o que comparar com id
+    dm.query_cargos.ParamByName('id').Value := id; // passando parametro e esse id no final vem da variavel no inicio do cod
+    dm.query_cargos.ExecSQL;  // OPEN É SO PARA CONSULTA, exec execulta
+
+    listar;
+    MessageDlg('Editado com sucesso!', mtInformation, MbOKCancel,0);
+    BtnEditar.Enabled := false;
+    BtnExcluir.Enabled := false;
+    EdtNome.Text := '';
+
+end;
+   procedure TFrmCargos.BtnExcluirClick(Sender: TObject);
+begin
+if MessageDlg('Deseja Excluir o Registro?', mtConfirmation, [mbYes,mbNo],0) = mrYes then
+//Confirmation pq é uma pergunta. mbyes e mbno, são os dois botoes de escolha. mryes = resposta do usuario
+  begin
+    dm.tb_Cargos.Delete; //Se sim ele vai deletar
+    MessageDlg('Excluido com Sucesso!', mtInformation, mbOKCancel,0);
+    EdtNome.Text := '';
+    BtnEditar.Enabled := false;
+    BtnSalvar.Enabled := false;
+    BtnExcluir.Enabled := false;
+    listar;
+  end;
+
+end;
+
+//BOTÃO NOVO
+procedure TFrmCargos.BtnNovoClick(Sender: TObject);
+begin
+    BtnSalvar.Enabled := True;
+    EdtNome.Enabled := True;
+    EdtNome.Text := '';
+    EdtNome.SetFocus;
+
+    dm.tb_Cargos.Insert;
+
+end;
+
+    //BOTÃO SALVAR
+procedure TFrmCargos.BtnSalvarClick(Sender: TObject);
+// VAR PRA VERIFICAÇÃO LA EMBAIXO
+var
+cargo : string;
+
+
+begin
+    if trim(EdtNome.text) = '' then
+    begin
+      MessageDlg('Preencha o Campo' , mtInformation, mbOKCancel,0);
+      EdtNome.SetFocus;
+      exit;
+    end;
+
+    //VERIFICAR SE O CARGO JA ESTÁ CADASTRADO
+    dm.query_cargos.Close;
+    dm.query_cargos.SQL.clear;
+    dm.query_cargos.SQL.Add('SELECT * FROM cargos where cargo = ' + QuotedStr(trim(EdtNome.text))); //QUOTEDSTR É PRO BANCO ACEITAR O CAMANDO TRIM DE IGNORAR ESPARÇOS
+    dm.query_cargos.Open; // inicia a query /abrir
+
+    if not dm.query_cargos.IsEmpty then  // empty sem o not é pra verificar se o campo está vazio e com o not é pra verificar se tem valor
+    begin
+         cargo := dm.query_cargos['cargo'];
+      MessageDlg('O cargo ' + cargo + ' já existe no banco de Dados!', mtInformation, MbOKCancel,0);
+      EdtNome.Text := '';
+      EdtNome.SetFocus;
+      exit;
+    end;
+
+
+    associarCampos;
+    dm.tb_Cargos.Post;
+    MessageDlg('Salvo com Sucesso', mtInformation, mbOKCancel,0);
+    EdtNome.Text := '';
+    EdtNome.Enabled := false;
+    BtnSalvar.Enabled := false;
+    listar;
+    //m de mensagem , t de text e information de informação, mb de messagem button, passar valores, variaveis etc
+
+
+end;
+
+
+procedure TFrmCargos.FormCreate(Sender: TObject);
+begin
+dm.tb_Cargos.Active := true;
+listar;
+end;
+
+//Recuperando valor da grid ao dar um click nela
+procedure TFrmCargos.gridCellClick(Column: TColumn);
+
+begin
+EdtNome.enabled := true;
+BtnEditar.Enabled := true;
+BtnExcluir.Enabled := true;
+
+
+
+dm.tb_Cargos.Edit; // Chamano a tabela cargo e avisando que vai fazer uma edição
+
+ if dm.query_cargos.FieldByName('cargo').Value <> null then
+
+    EdtNome.Text := dm.query_cargos.FieldByName('cargo').Value;
+    // o campo edtnome recebe o que tem dentro do datamodule na query de cargos e filtre pra mim pelo nome que esteja na coluna de cargo e traga o valor
+
+    id := dm.query_cargos.FieldByName('id').Value;
+
+
+
+end;
+
+procedure TFrmCargos.listar;
+begin
+    dm.query_cargos.Close;
+    dm.query_cargos.SQL.clear;
+    dm.query_cargos.SQL.Add('SELECT * FROM cargos order by cargo asc');
+    dm.query_cargos.Open;// inicia a query /abrir
+end;
+
+end.
+
+
+

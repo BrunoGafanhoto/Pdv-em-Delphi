@@ -1,0 +1,71 @@
+object frmRegistro: TfrmRegistro
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'Registro de Software'
+  ClientHeight = 223
+  ClientWidth = 539
+  Color = clInactiveCaption
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnClose = FormClose
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 40
+    Top = 24
+    Width = 269
+    Height = 14
+    Caption = 'Ligue para o suporte  e  informe a chave abaixo:.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lbl: TLabel
+    Left = 40
+    Top = 96
+    Width = 280
+    Height = 14
+    Caption = 'Digite a chave de libera'#231#227'o informada pelo suporte.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Button1: TButton
+    Left = 392
+    Top = 168
+    Width = 113
+    Height = 37
+    Caption = 'Liberar Sistema'
+    TabOrder = 0
+    OnClick = Button1Click
+  end
+  object edtCodigo: TEdit
+    Left = 40
+    Top = 44
+    Width = 465
+    Height = 21
+    ReadOnly = True
+    TabOrder = 1
+  end
+  object edtCodLiberacao: TEdit
+    Left = 40
+    Top = 132
+    Width = 465
+    Height = 21
+    TabOrder = 2
+  end
+end

@@ -1,0 +1,67 @@
+object FrmRegistro: TFrmRegistro
+  Left = 0
+  Top = 0
+  Caption = 'Registro de Software'
+  ClientHeight = 215
+  ClientWidth = 526
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 40
+    Top = 24
+    Width = 274
+    Height = 16
+    Caption = 'Ligue para o suporte e informe o c'#243'digo abaixo.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label2: TLabel
+    Left = 40
+    Top = 112
+    Width = 295
+    Height = 16
+    Caption = 'Digite a chave de libera'#231#227'o informada pelo suporte.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object edtCodigo: TEdit
+    Left = 40
+    Top = 56
+    Width = 393
+    Height = 21
+    ReadOnly = True
+    TabOrder = 0
+  end
+  object edtcodLiberacao: TEdit
+    Left = 40
+    Top = 142
+    Width = 393
+    Height = 21
+    TabOrder = 1
+    OnChange = edtcodLiberacaoChange
+  end
+  object Button1: TButton
+    Left = 443
+    Top = 96
+    Width = 75
+    Height = 25
+    Caption = 'Registrar'
+    TabOrder = 2
+  end
+end

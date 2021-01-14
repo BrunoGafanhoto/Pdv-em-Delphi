@@ -1,0 +1,52 @@
+object FrmCertificado: TFrmCertificado
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'Certificado Digital'
+  ClientHeight = 349
+  ClientWidth = 637
+  Color = clInactiveCaption
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  DesignSize = (
+    637
+    349)
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StringGrid1: TStringGrid
+    Left = 0
+    Top = 0
+    Width = 629
+    Height = 281
+    FixedCols = 0
+    RowCount = 2
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing]
+    TabOrder = 0
+  end
+  object BitBtn1: TBitBtn
+    Left = 429
+    Top = 301
+    Width = 88
+    Height = 30
+    Anchors = [akTop, akRight]
+    Kind = bkCancel
+    NumGlyphs = 2
+    TabOrder = 1
+  end
+  object BitBtn2: TBitBtn
+    Left = 541
+    Top = 301
+    Width = 88
+    Height = 30
+    Anchors = [akTop, akRight]
+    Kind = bkOK
+    NumGlyphs = 2
+    TabOrder = 2
+  end
+end

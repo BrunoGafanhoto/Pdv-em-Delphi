@@ -1,0 +1,223 @@
+unit ImprimirBarras;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls,
+  Vcl.Imaging.pngimage;
+
+type
+  TFrmImprimirBarras = class(TForm)
+    Image1: TImage;
+    Image2: TImage;
+    Image3: TImage;
+    Image4: TImage;
+    Image5: TImage;
+    Image6: TImage;
+    Image7: TImage;
+    Image8: TImage;
+    Image9: TImage;
+    Image10: TImage;
+    Image11: TImage;
+    Image12: TImage;
+    Image13: TImage;
+    Image14: TImage;
+    Image15: TImage;
+    Image16: TImage;
+    Image17: TImage;
+    Image18: TImage;
+    Image19: TImage;
+    Image20: TImage;
+    Image21: TImage;
+    Image22: TImage;
+    Image23: TImage;
+    Image24: TImage;
+    Image25: TImage;
+    Image26: TImage;
+    Image27: TImage;
+    Image28: TImage;
+    Image29: TImage;
+    Image30: TImage;
+    Image31: TImage;
+    Image32: TImage;
+    Image33: TImage;
+    Image34: TImage;
+    Image35: TImage;
+    Image36: TImage;
+    Image37: TImage;
+    Image38: TImage;
+    Image39: TImage;
+    Image40: TImage;
+    Image41: TImage;
+    Image42: TImage;
+    Image43: TImage;
+    Image44: TImage;
+    Image45: TImage;
+    Image46: TImage;
+    Image47: TImage;
+    Image48: TImage;
+    Image49: TImage;
+    Image50: TImage;
+    Image51: TImage;
+    Image52: TImage;
+    Image53: TImage;
+    Image54: TImage;
+    Image55: TImage;
+    Image56: TImage;
+    Image57: TImage;
+    Image58: TImage;
+    Image59: TImage;
+    Image60: TImage;
+    Image61: TImage;
+    Image62: TImage;
+    Image63: TImage;
+    Image64: TImage;
+    Image65: TImage;
+    Image66: TImage;
+    Image67: TImage;
+    Image68: TImage;
+    Image69: TImage;
+    Image70: TImage;
+    Image71: TImage;
+    Image72: TImage;
+    procedure FormShow(Sender: TObject);
+
+  private
+    { Private declarations }
+   procedure GerarCodigo(codigo: string; Canvas: TCanvas);
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmImprimirBarras: TFrmImprimirBarras;
+
+implementation
+
+{$R *.dfm}
+
+uses Produtos, Modulo;
+
+
+
+
+procedure TFrmImprimirBarras.FormShow(Sender: TObject);
+begin
+GerarCodigo(codigoProduto, Image1);
+GerarCodigo(codigoProduto, Image2);
+GerarCodigo(codigoProduto, Image3);
+GerarCodigo(codigoProduto, Image4);
+GerarCodigo(codigoProduto, Image5);
+GerarCodigo(codigoProduto, Image6);
+GerarCodigo(codigoProduto, Image7);
+GerarCodigo(codigoProduto, Image8);
+GerarCodigo(codigoProduto, Image9);
+GerarCodigo(codigoProduto, Image10);
+GerarCodigo(codigoProduto, Image11);
+GerarCodigo(codigoProduto, Image12);
+GerarCodigo(codigoProduto, Image13);
+GerarCodigo(codigoProduto, Image14);
+GerarCodigo(codigoProduto, Image15);
+GerarCodigo(codigoProduto, Image16);
+GerarCodigo(codigoProduto, Image17);
+GerarCodigo(codigoProduto, Image18);
+GerarCodigo(codigoProduto, Image19);
+GerarCodigo(codigoProduto, Image20);
+GerarCodigo(codigoProduto, Image21);
+GerarCodigo(codigoProduto, Image22);
+GerarCodigo(codigoProduto, Image23);
+GerarCodigo(codigoProduto, Image24);
+GerarCodigo(codigoProduto, Image25);
+GerarCodigo(codigoProduto, Image26);
+GerarCodigo(codigoProduto, Image27);
+GerarCodigo(codigoProduto, Image28);
+GerarCodigo(codigoProduto, Image29);
+GerarCodigo(codigoProduto, Image30);
+GerarCodigo(codigoProduto, Image31);
+GerarCodigo(codigoProduto, Image32);
+GerarCodigo(codigoProduto, Image33);
+GerarCodigo(codigoProduto, Image34);
+GerarCodigo(codigoProduto, Image35);
+GerarCodigo(codigoProduto, Image36);
+GerarCodigo(codigoProduto, Image37);
+GerarCodigo(codigoProduto, Image38);
+GerarCodigo(codigoProduto, Image39);
+GerarCodigo(codigoProduto, Image40);
+GerarCodigo(codigoProduto, Image41);
+GerarCodigo(codigoProduto, Image42);
+GerarCodigo(codigoProduto, Image43);
+GerarCodigo(codigoProduto, Image44);
+GerarCodigo(codigoProduto, Image45);
+GerarCodigo(codigoProduto, Image46);
+GerarCodigo(codigoProduto, Image47);
+GerarCodigo(codigoProduto, Image48);
+GerarCodigo(codigoProduto, Image49);
+GerarCodigo(codigoProduto, Image50);
+GerarCodigo(codigoProduto, Image51);
+GerarCodigo(codigoProduto, Image52);
+GerarCodigo(codigoProduto, Image53);
+GerarCodigo(codigoProduto, Image54);
+GerarCodigo(codigoProduto, Image55);
+GerarCodigo(codigoProduto, Image56);
+GerarCodigo(codigoProduto, Image57);
+GerarCodigo(codigoProduto, Image58);
+GerarCodigo(codigoProduto, Image59);
+GerarCodigo(codigoProduto, Image60);
+GerarCodigo(codigoProduto, Image61);
+GerarCodigo(codigoProduto, Image62);
+GerarCodigo(codigoProduto, Image63);
+GerarCodigo(codigoProduto, Image64);
+GerarCodigo(codigoProduto, Image65);
+GerarCodigo(codigoProduto, Image66);
+GerarCodigo(codigoProduto, Image67);
+GerarCodigo(codigoProduto, Image68);
+GerarCodigo(codigoProduto, Image69);
+GerarCodigo(codigoProduto, Image70);
+GerarCodigo(codigoProduto, Image71);
+GerarCodigo(codigoProduto, Image72);
+
+
+end;
+
+procedure TFrmImprimirBarras.GerarCodigo(codigo: string; Canvas: TCanvas);
+
+    const
+    digitos : array['0'..'9'] of string[5]= ('00110', '10001', '01001', '11000',
+    '00101', '10100', '01100', '00011', '10010', '01010');
+    var s : string;
+    i, j, x, t : Integer;
+begin
+    // Gerar o valor para desenhar o código de barras
+    // Caracter de início
+    s := '0000';
+    for i := 1 to length(codigo) div 2 do
+    for j := 1 to 5 do
+    s := s + Copy(Digitos[codigo[i * 2 - 1]], j, 1) + Copy(Digitos[codigo[i * 2]], j, 1);
+    // Caracter de fim
+    s := s + '100';
+    // Desenhar em um objeto canvas
+    // Configurar os parâmetros iniciais
+    x := 0;
+    // Pintar o fundo do código de branco
+    Canvas.Brush.Color := clWhite;
+    Canvas.Pen.Color := clWhite;
+    Canvas.Rectangle(10,10, 500, 79);
+    // Definir as cores da caneta
+    Canvas.Brush.Color := clBlack;
+    Canvas.Pen.Color := clBlack;
+    // Escrever o código de barras no canvas
+    for i := 1 to length(s) do
+      begin
+      // Definir a espessura da barra
+      t := strToInt(s[i]) * 2 + 1;
+      // Imprimir apenas barra sim barra não (preto/branco - intercalado);
+      if i mod 2 = 1 then
+      Canvas.Rectangle(x, 0, x + t, 79);
+      // Passar para a próxima barra
+      x := x + t;
+      end;
+
+end;
+
+end.

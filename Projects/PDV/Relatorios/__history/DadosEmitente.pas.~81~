@@ -1,0 +1,270 @@
+unit DadosEmitente;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Data.DB,
+  Vcl.Grids, Vcl.DBGrids;
+
+type
+  TFrmDadosEmitente = class(TForm)
+    edtEmitIE: TEdit;
+    Label13: TLabel;
+    edtEmitCNPJ: TEdit;
+    Label12: TLabel;
+    edtEmitRazao: TEdit;
+    Label14: TLabel;
+    edtEmitFantasia: TEdit;
+    Label15: TLabel;
+    Label24: TLabel;
+    edtEmitFone: TEdit;
+    Label23: TLabel;
+    edtEmitCEP: TEdit;
+    edtEmitNumero: TEdit;
+    Label17: TLabel;
+    edtEmitLogradouro: TEdit;
+    Label16: TLabel;
+    edtEmitComp: TEdit;
+    Label18: TLabel;
+    edtEmitBairro: TEdit;
+    Label19: TLabel;
+    edtEmitCodCidade: TEdit;
+    Label20: TLabel;
+    edtEmitCidade: TEdit;
+    Label21: TLabel;
+    edtEmitUF: TEdit;
+    Label22: TLabel;
+    cbTipoEmpresa: TComboBox;
+    Label52: TLabel;
+    BtnSalvar: TSpeedButton;
+    BtnExcluir: TSpeedButton;
+    grid_emitente: TDBGrid;
+    edtCodMun: TEdit;
+    edtCodUf: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    procedure FormShow(Sender: TObject);
+    procedure BtnSalvarClick(Sender: TObject);
+    procedure edtEmitCNPJClick(Sender: TObject);
+    procedure BtnExcluirClick(Sender: TObject);
+    procedure grid_emitenteCellClick(Column: TColumn);
+  private
+    { Private declarations }
+    procedure associarCampos;
+    procedure listar;
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmDadosEmitente: TFrmDadosEmitente;
+  id : string;
+
+implementation
+
+{$R *.dfm}
+
+uses Modulo;
+
+{ TForm1 }
+
+procedure TFrmDadosEmitente.associarCampos;
+begin
+dm.tb_dados_emitente.FieldByName('cnpj').Value := edtEmitCNPJ.text;
+dm.tb_dados_emitente.FieldByName('ie').Value := edtEmitIE.Text;
+dm.tb_dados_emitente.FieldByName('razao_social').Value := edtEmitRazao.Text;
+dm.tb_dados_emitente.FieldByName('fantasia').Value := edtEmitFantasia.Text;
+dm.tb_dados_emitente.FieldByName('telefone').Value := edtEmitFone.Text;
+dm.tb_dados_emitente.FieldByName('cep').Value := edtEmitCEP.Text;
+dm.tb_dados_emitente.FieldByName('logradouro').Value := edtEmitLogradouro.Text;
+dm.tb_dados_emitente.FieldByName('num').Value := edtEmitNumero.Text;
+dm.tb_dados_emitente.FieldByName('complemento').Value := edtEmitComp.Text;
+dm.tb_dados_emitente.FieldByName('bairro').Value := edtEmitBairro.Text;
+dm.tb_dados_emitente.FieldByName('cod_cidade').Value := edtEmitCodCidade.Text;
+dm.tb_dados_emitente.FieldByName('cidade').Value := edtEmitCidade.Text;
+dm.tb_dados_emitente.FieldByName('uf').Value := edtEmitUF.Text ;
+dm.tb_dados_emitente.FieldByName('tipo_empresa').Value := cbTipoEmpresa.Text ;
+end;
+
+procedure TFrmDadosEmitente.BtnExcluirClick(Sender: TObject);
+begin
+    if MessageDlg('Deseja excluir esse registro?', mtConfirmation,[mbYes,mbNo],0) = mrYes then
+     begin
+     dm.tb_dados_emitente.Delete;
+     Messagedlg('Excluido com Sucesso!', mtInformation, mbOKCancel ,0);
+
+     listar;
+
+     BtnSalvar.Enabled := true;
+     BtnExcluir.Enabled := false;
+     end;
+end;
+
+
+procedure TFrmDadosEmitente.BtnSalvarClick(Sender: TObject);
+begin
+//Validações
+if edtEmitCNPJ.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitCNPJ.SetFocus;
+ end;
+
+ if edtEmitRazao.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitRazao.SetFocus;
+ end;
+
+
+ if edtEmitIE.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitIE.SetFocus;
+ end;
+
+
+ if edtEmitFantasia.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitFantasia.SetFocus;
+ end;
+
+ if edtEmitFone.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitFone.SetFocus;
+ end;
+
+ if edtEmitCEP.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitCEP.SetFocus;
+ end;
+
+ if edtEmitLogradouro.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitLogradouro.SetFocus;
+ end;
+ if edtEmitNumero.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitNumero.SetFocus;
+ end;
+
+ if edtEmitComp.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitComp.SetFocus;
+ end;
+
+ if edtEmitBairro.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitBairro.SetFocus;
+ end;
+
+ if edtEmitCodCidade.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitCodCidade.SetFocus;
+ end;
+
+ if edtEmitCidade.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitCidade.SetFocus;
+ end;
+
+
+ if edtEmitUF.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitUF.SetFocus;
+ end;
+
+
+ if cbTipoEmpresa.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   cbTipoEmpresa.SetFocus;
+ end;
+
+
+
+
+associarCampos;
+dm.tb_dados_emitente.Post;
+listar;
+messagedlg('Salvo com sucesso',mtInformation , mbOKCancel,0);
+end;
+
+procedure TFrmDadosEmitente.edtEmitCNPJClick(Sender: TObject);
+begin
+   if dm.query_dados_emitente.FieldByName('cnpj').value <> null then
+    begin
+       edtEmitCNPJ.text := dm.query_dados_emitente.FieldByName('cnpj').Value;
+      edtEmitIE.Text := dm.query_dados_emitente.FieldByName('ie').Value;
+       edtEmitRazao.Text := dm.query_dados_emitente.FieldByName('razao_social').Value;
+    edtEmitFantasia.Text := dm.query_dados_emitente.FieldByName('fantasia').Value;
+       edtEmitFone.Text := dm.query_dados_emitente.FieldByName('telefone').Value;
+       edtEmitCEP.Text := dm.query_dados_emitente.FieldByName('cep').Value;
+      edtEmitLogradouro.Text := dm.query_dados_emitente.FieldByName('logradouro').Value;
+       edtEmitNumero.Text := dm.query_dados_emitente.FieldByName('num').Value;
+      edtEmitComp.Text := dm.query_dados_emitente.FieldByName('complemento').Value;
+       edtEmitBairro.Text := dm.query_dados_emitente.FieldByName('bairro').Value;
+      edtEmitCodCidade.Text := dm.query_dados_emitente.FieldByName('cod_cidade').Value;
+       edtEmitCidade.Text := dm.query_dados_emitente.FieldByName('cidade').Value;
+       edtEmitUF.Text := dm.query_dados_emitente.FieldByName('uf').Value;
+       cbTipoEmpresa.Text := dm.query_dados_emitente.FieldByName('tipo_empresa').Value
+    end;
+end;
+
+procedure TFrmDadosEmitente.FormShow(Sender: TObject);
+begin
+    dm.tb_dados_emitente.active := true;
+    dm.tb_dados_emitente.insert;
+
+    listar;
+
+
+
+
+
+end;
+
+procedure TFrmDadosEmitente.grid_emitenteCellClick(Column: TColumn);
+begin
+       if dm.query_dados_emitente.FieldByName('cnpj').value <> null then
+    begin
+       edtEmitCNPJ.text := dm.query_dados_emitente.FieldByName('cnpj').Value;
+      edtEmitIE.Text := dm.query_dados_emitente.FieldByName('ie').Value;
+       edtEmitRazao.Text := dm.query_dados_emitente.FieldByName('razao_social').Value;
+    edtEmitFantasia.Text := dm.query_dados_emitente.FieldByName('fantasia').Value;
+       edtEmitFone.Text := dm.query_dados_emitente.FieldByName('telefone').Value;
+       edtEmitCEP.Text := dm.query_dados_emitente.FieldByName('cep').Value;
+      edtEmitLogradouro.Text := dm.query_dados_emitente.FieldByName('logradouro').Value;
+       edtEmitNumero.Text := dm.query_dados_emitente.FieldByName('num').Value;
+      edtEmitComp.Text := dm.query_dados_emitente.FieldByName('complemento').Value;
+       edtEmitBairro.Text := dm.query_dados_emitente.FieldByName('bairro').Value;
+      edtEmitCodCidade.Text := dm.query_dados_emitente.FieldByName('cod_cidade').Value;
+       edtEmitCidade.Text := dm.query_dados_emitente.FieldByName('cidade').Value;
+       edtEmitUF.Text := dm.query_dados_emitente.FieldByName('uf').Value;
+       cbTipoEmpresa.Text := dm.query_dados_emitente.FieldByName('tipo_empresa').Value;
+
+      id := dm.query_dados_emitente.FieldByName('id').Value;
+      BtnExcluir.Enabled := true;
+    end;
+end;
+
+procedure TFrmDadosEmitente.listar;
+begin
+ dm.query_dados_emitente.Close;
+ dm.query_dados_emitente.sql.Clear;
+ dm.query_dados_emitente.SQL.Add('select * from dados_emitente');
+ dm.query_dados_emitente.Open;
+end;
+
+end.

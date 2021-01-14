@@ -1,0 +1,184 @@
+unit DadosComprovante;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Data.DB,
+  Vcl.Grids, Vcl.DBGrids, Vcl.Mask;
+
+type
+  TFrmDadosComprov = class(TForm)
+    Label13: TLabel;
+    Label12: TLabel;
+    Label15: TLabel;
+    Label24: TLabel;
+    Label17: TLabel;
+    Label16: TLabel;
+    edtEmitFantasia: TEdit;
+    edtEmitNumero: TEdit;
+    edtEmitLogradouro: TEdit;
+    Label19: TLabel;
+    edtEmitBairro: TEdit;
+    BtnSalvar: TSpeedButton;
+    BtnExcluir: TSpeedButton;
+    grid_emitente: TDBGrid;
+    edtEmitIE: TMaskEdit;
+    edtEmitFone: TMaskEdit;
+    edtEmitCNPJ: TMaskEdit;
+    procedure FormShow(Sender: TObject);
+    procedure grid_emitenteCellClick(Column: TColumn);
+    procedure BtnSalvarClick(Sender: TObject);
+    procedure BtnExcluirClick(Sender: TObject);
+  private
+    { Private declarations }
+      procedure associarCampos;
+    procedure listar;
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmDadosComprov: TFrmDadosComprov;
+  id : string;
+
+implementation
+
+{$R *.dfm}
+
+uses Modulo;
+
+{ TForm1 }
+
+procedure TFrmDadosComprov.associarCampos;
+begin
+dm.tb_comprovante.FieldByName('cnpj').Value := edtEmitCNPJ.text;
+dm.tb_comprovante.FieldByName('ie').Value := edtEmitIE.Text;
+dm.tb_comprovante.FieldByName('bairro').Value := edtEmitBairro.Text;
+dm.tb_comprovante.FieldByName('fantasia').Value := edtEmitFantasia.Text;
+dm.tb_comprovante.FieldByName('tel').Value := edtEmitFone.Text;
+dm.tb_comprovante.FieldByName('num').Value := edtEmitNumero.Text;
+dm.tb_comprovante.FieldByName('endereco').Value := edtEmitLogradouro.Text;
+
+end;
+
+procedure TFrmDadosComprov.BtnExcluirClick(Sender: TObject);
+begin
+if MessageDlg('Deseja excluir esse registro?', mtConfirmation,[mbYes,mbNo],0) = mrYes then
+     begin
+     dm.query_comprovante.Close;
+     dm.query_comprovante.SQL.Clear;
+     dm.query_comprovante.SQL.Add('DELETE FROM dados_comprovante where id = :id');
+     dm.query_comprovante.PARAMBYNAME('id').Value := id;
+     dm.query_comprovante.ExecSQL;
+     Messagedlg('Excluido com Sucesso!', mtInformation, mbOKCancel ,0);
+
+     listar;
+
+     BtnSalvar.Enabled := true;
+     BtnExcluir.Enabled := false;
+     end;
+end;
+
+procedure TFrmDadosComprov.BtnSalvarClick(Sender: TObject);
+begin
+if edtEmitBairro.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitBairro.SetFocus;
+ end;
+
+ if edtEmitCNPJ.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitCNPJ.SetFocus;
+ end;
+
+ if edtEmitIE.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitIE.SetFocus;
+ end;
+
+
+ if edtEmitBairro.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitBairro.SetFocus;
+ end;
+
+
+ if edtEmitFantasia.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitFantasia.SetFocus;
+ end;
+
+ if edtEmitFone.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitFone.SetFocus;
+ end;
+
+ if edtEmitNumero.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitNumero.SetFocus;
+ end;
+
+  if edtEmitLogradouro.Text = '' then
+ begin
+   messagedlg('Preencha todos os campos!',mtInformation,mbOKCancel,0);
+   edtEmitLogradouro.SetFocus;
+ end;
+
+
+
+
+
+
+
+associarCampos;
+dm.tb_comprovante.Post;
+listar;
+messagedlg('Salvo com sucesso',mtInformation , mbOKCancel,0);
+end;
+
+procedure TFrmDadosComprov.FormShow(Sender: TObject);
+begin
+ dm.tb_comprovante.active := true;
+    dm.tb_comprovante.insert;
+
+    listar;
+end;
+
+procedure TFrmDadosComprov.grid_emitenteCellClick(Column: TColumn);
+begin
+  if dm.query_comprovante.FieldByName('cnpj').value <> null then
+    begin
+      edtEmitCNPJ.text := dm.query_comprovante.FieldByName('cnpj').Value;
+      edtEmitIE.Text := dm.query_comprovante.FieldByName('ie').Value;
+
+    edtEmitFantasia.Text := dm.query_comprovante.FieldByName('fantasia').Value;
+       edtEmitFone.Text := dm.query_comprovante.FieldByName('tel').Value;
+
+      edtEmitLogradouro.Text := dm.query_comprovante.FieldByName('endereco').Value;
+       edtEmitNumero.Text := dm.query_comprovante.FieldByName('num').Value;
+
+       edtEmitBairro.Text := dm.query_comprovante.FieldByName('bairro').Value;
+
+      id := dm.query_comprovante.FieldByName('id').Value;
+      BtnExcluir.Enabled := true;
+      btnSalvar.Enabled := false;
+    end;
+end;
+
+procedure TFrmDadosComprov.listar;
+begin
+ dm.query_comprovante.Close;
+ dm.query_comprovante.sql.Clear;
+ dm.query_comprovante.SQL.Add('select * from dados_comprovante');
+ dm.query_comprovante.Open;
+end;
+
+end.

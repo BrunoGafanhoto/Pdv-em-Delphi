@@ -1,0 +1,115 @@
+unit Gaveta;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Data.DB, Vcl.Grids,
+  Vcl.DBGrids;
+  (*
+type
+  TFrmGaveta = class(TForm)
+    Label2: TLabel;
+    edtNomePc: TEdit;
+    edtNomeComp: TEdit;
+    btnSalvar: TButton;
+    grid: TDBGrid;
+    btnExcluir: TButton;
+    procedure FormShow(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
+    procedure gridCellClick(Column: TColumn);
+    procedure btnExcluirClick(Sender: TObject);
+  private
+    { Private declarations }
+     procedure associarCampos;
+     procedure listar;
+     procedure buscarDados;
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmGaveta: TFrmGaveta;
+  id : string;
+
+implementation
+
+{$R *.dfm}
+
+uses Modulo;
+
+{ TForm1 }
+
+procedure TFrmGaveta.associarCampos;
+begin
+ dm.tb_gaveta.FieldByName('nome_pc').Value := edtNomePc.Text;
+ dm.tb_gaveta.FieldByName('nome_compartilhamento').Value := edtNomeComp.text;
+end;
+
+procedure TFrmGaveta.btnExcluirClick(Sender: TObject);
+begin
+if MessageDlg('Deseja Excluir o Registro?', mtConfirmation, [mbYes,mbNo],0) = mrYes then
+   begin
+    dm.tb_gaveta.Delete; //Se sim ele vai deletar
+
+    edtNomePc.Text := '';
+    edtNomeComp.Text := '';
+
+    BtnExcluir.Enabled := false;
+    MessageDlg('Excluido com Sucesso!', mtInformation, mbOKCancel,0);
+      listar;
+   end;
+end;
+
+procedure TFrmGaveta.btnSalvarClick(Sender: TObject);
+begin
+ associarCampos;
+ dm.tb_gaveta.Post;
+ showmessage('Salvo com sucesso');
+ listar;
+end;
+
+procedure TFrmGaveta.buscarDados;
+begin
+ 
+end;
+
+procedure TFrmGaveta.FormShow(Sender: TObject);
+begin
+dm.tb_gaveta.active := true;
+dm.tb_gaveta.insert;
+listar;
+end;
+
+procedure TFrmGaveta.gridCellClick(Column: TColumn);
+begin
+BtnExcluir.Enabled := true;
+btnSalvar.enabled := false;
+
+
+ dm.tb_gaveta.edit;
+ // Chamando a tabela cargo e avisando que vai fazer uma edição
+
+ if dm.query_gaveta.FieldByName('nome_pc').Value <> null then
+  begin
+
+    edtNomePc.Text := dm.query_gaveta.FieldByName('nome_pc').Value;
+    edtNomeComp.Text := dm.query_gaveta.FieldByName('nome_compartilhamento').Value;
+    // o campo edtnome recebe o que tem dentro do datamodule na query de cargos e filtre pra mim pelo nome que esteja na coluna de cargo e traga o valor
+
+    id := dm.query_gaveta.FieldByName('id').Value;
+  end;
+
+
+
+end;
+
+procedure TFrmGaveta.listar;
+begin
+dm.query_gaveta.Close;
+  dm.query_gaveta.SQL.Clear;
+  dm.query_gaveta.SQL.Add('select * from gaveta');
+  dm.query_gaveta.Open;
+end; *)
+
+end.

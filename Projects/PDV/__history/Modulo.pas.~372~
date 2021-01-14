@@ -1,0 +1,499 @@
+unit Modulo;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
+  Data.DB, FireDAC.Comp.Client, FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef,
+  FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt,
+  FireDAC.Comp.DataSet, Data.Bind.ObjectScope, frxClass, frxDBSet;
+
+type
+  Tdm = class(TDataModule)
+    fd: TFDConnection;
+    FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink;
+    tb_Cargos: TFDTable;
+    query_cargos: TFDQuery;
+    query_cargosid: TFDAutoIncField;
+    query_cargoscargo: TStringField;
+    DSCargos: TDataSource;
+    tb_func: TFDTable;
+    query_func: TFDQuery;
+    DSFunc: TDataSource;
+    query_funcid: TFDAutoIncField;
+    query_funcnome: TStringField;
+    query_funccpf: TStringField;
+    query_functelefone: TStringField;
+    query_funcendereco: TStringField;
+    query_funccargo: TStringField;
+    query_funcdata: TDateField;
+    tb_usuarios: TFDTable;
+    query_usuarios: TFDQuery;
+    query_usuariosid: TFDAutoIncField;
+    query_usuariosnome: TStringField;
+    query_usuariosusuario: TStringField;
+    query_usuariossenha: TStringField;
+    query_usuarioscargo: TStringField;
+    query_usuariosid_funcionario: TIntegerField;
+    DSUsuarios: TDataSource;
+    tb_forn: TFDTable;
+    query_forn: TFDQuery;
+    DSForn: TDataSource;
+    query_fornnome: TStringField;
+    query_fornproduto: TStringField;
+    query_fornendereco: TStringField;
+    query_forntelefone: TStringField;
+    query_forndata: TDateField;
+    query_fornid: TFDAutoIncField;
+    tb_produtos: TFDTable;
+    query_produtos: TFDQuery;
+    DSProdutos: TDataSource;
+    query_produtosid: TFDAutoIncField;
+    query_produtoscodigo: TStringField;
+    query_produtosnome: TStringField;
+    query_produtosdescricao: TStringField;
+    query_produtosvalor: TBCDField;
+    query_produtosestoque: TIntegerField;
+    query_produtosdata: TDateField;
+    query_produtosimagem: TBlobField;
+    DSEntradaProdutos: TDataSource;
+    tb_entrada_pro: TFDTable;
+    query_entrada_pro: TFDQuery;
+    query_entrada_proproduto: TStringField;
+    query_entrada_proquantidade: TIntegerField;
+    query_entrada_provalor: TBCDField;
+    query_entrada_prototal: TBCDField;
+    query_entrada_prodata: TDateField;
+    query_entrada_proid_produto: TIntegerField;
+    query_entrada_pronome: TStringField;
+    query_entrada_protelefone: TStringField;
+    query_produtosultima_compra: TDateField;
+    tb_saida_pro: TFDTable;
+    DSSaidaProdutos: TDataSource;
+    query_saida_pro: TFDQuery;
+    query_saida_proid: TFDAutoIncField;
+    query_saida_proproduto: TStringField;
+    query_saida_proquantidade: TIntegerField;
+    query_saida_promotivo: TStringField;
+    query_saida_prodata: TDateField;
+    query_saida_proid_produto: TIntegerField;
+    tb_vendas: TFDTable;
+    query_vendas: TFDQuery;
+    query_vendasid: TFDAutoIncField;
+    query_vendasvalor: TBCDField;
+    query_vendasdata: TDateTimeField;
+    query_vendasfuncionario: TStringField;
+    DSVendas: TDataSource;
+    tb_detalhes_vendas: TFDTable;
+    DSDetVendas: TDataSource;
+    query_det_vendas: TFDQuery;
+    query_det_vendasid: TFDAutoIncField;
+    query_det_vendasid_venda: TIntegerField;
+    query_det_vendasvalor: TBCDField;
+    query_det_vendasquantidade: TIntegerField;
+    query_det_vendastotal: TBCDField;
+    query_det_vendasid_produto: TIntegerField;
+    query_det_vendasfuncionario: TStringField;
+    query_coringa: TFDQuery;
+    tb_mov: TFDTable;
+    DSMov: TDataSource;
+    query_mov: TFDQuery;
+    query_vendasdesconto: TBCDField;
+    query_vendasmetodo: TStringField;
+    tb_venda_dir: TFDTable;
+    query_venda_dir: TFDQuery;
+    DSVendaDir: TDataSource;
+    tb_det_vendas_dir: TFDTable;
+    query_det_vendas_dir: TFDQuery;
+    DSDetVenDir: TDataSource;
+    query_venda_dirid: TFDAutoIncField;
+    query_venda_dirvalor: TBCDField;
+    query_venda_dirmetodo: TStringField;
+    query_venda_dirdata: TDateField;
+    query_venda_dirfuncionario: TStringField;
+    tb_gastos: TFDTable;
+    query_gastos: TFDQuery;
+    DSGastos: TDataSource;
+    query_gastosid: TFDAutoIncField;
+    query_gastosmotivo: TStringField;
+    query_gastosvalor: TBCDField;
+    query_gastosfuncionario: TStringField;
+    query_gastosdata: TDateField;
+    DSDadosEmitentes: TDataSource;
+    query_dados_emitente: TFDQuery;
+    tb_dados_emitente: TFDTable;
+    query_dados_emitenteid: TFDAutoIncField;
+    query_dados_emitentecnpj: TIntegerField;
+    query_dados_emitenteie: TIntegerField;
+    query_dados_emitenterazao_social: TStringField;
+    query_dados_emitentefantasia: TStringField;
+    query_dados_emitentetelefone: TIntegerField;
+    query_dados_emitentecep: TIntegerField;
+    query_dados_emitentelogradouro: TStringField;
+    query_dados_emitentenum: TIntegerField;
+    query_dados_emitentecomplemento: TStringField;
+    query_dados_emitentebairro: TStringField;
+    query_dados_emitentecod_cidade: TIntegerField;
+    query_dados_emitentecidade: TStringField;
+    query_dados_emitenteuf: TStringField;
+    query_dados_emitentetipo_empresa: TStringField;
+    rel_DS_Vendas: TfrxDBDataset;
+    rel_Det_Vendas: TfrxDBDataset;
+    rel_DS_DetVendasDir: TfrxDBDataset;
+    rel_DS_VendasDir: TfrxDBDataset;
+    rel_comprovante: TfrxReport;
+    rel_comprovantedir: TfrxReport;
+    query_vendasvalorcomdesc: TBCDField;
+    query_vendasvalor_entregue: TBCDField;
+    query_vendastroco: TBCDField;
+    tb_caixa: TFDTable;
+    query_caixa: TFDQuery;
+    DSCaixa: TDataSource;
+    query_caixaid: TFDAutoIncField;
+    query_caixadata_abertura: TDateField;
+    query_caixahora_abertura: TTimeField;
+    query_caixavalor_abertura: TBCDField;
+    query_caixafuncionario_abertura: TStringField;
+    query_caixadata_fechamento: TDateField;
+    query_caixahora_fechamento: TTimeField;
+    query_caixavalor_fechamento: TBCDField;
+    query_caixavalor_vendido: TBCDField;
+    query_caixavalor_quebra: TBCDField;
+    query_caixafuncionario_fechamento: TStringField;
+    query_caixanum_caixa: TIntegerField;
+    query_caixaoperador: TStringField;
+    query_caixastatus: TStringField;
+    rel_caixa: TfrxReport;
+    rel_DS_Caixa: TfrxDBDataset;
+    Rel_Dados_Comprovante: TfrxDBDataset;
+    tb_comprovante: TFDTable;
+    query_comprovante: TFDQuery;
+    DSComprovante: TDataSource;
+    query_comprovanteid: TFDAutoIncField;
+    query_comprovantecnpj: TStringField;
+    query_comprovanteie: TStringField;
+    query_comprovantetel: TStringField;
+    query_comprovanteendereco: TStringField;
+    query_comprovantenum: TStringField;
+    query_comprovantefantasia: TStringField;
+    query_comprovantebairro: TStringField;
+    rel_movimentacoes: TfrxReport;
+    rel_ds_mov: TfrxDBDataset;
+    rel_Mov_Cartao: TFDQuery;
+    rel_Mov_Dinheiro: TFDQuery;
+    rel_produtos: TfrxReport;
+    rel_DS_Prod: TfrxDBDataset;
+    query_caixa_coringa: TFDQuery;
+    query_caixa_coringadata_abertura: TDateField;
+    query_caixa_coringahora_abertura: TTimeField;
+    query_caixa_coringavalor_abertura: TBCDField;
+    query_caixa_coringafuncionario_abertura: TStringField;
+    query_caixa_coringadata_fechamento: TDateField;
+    query_caixa_coringahora_fechamento: TTimeField;
+    query_caixa_coringavalor_fechamento: TBCDField;
+    query_caixa_coringavalor_vendido: TBCDField;
+    query_caixa_coringavalor_quebra: TBCDField;
+    query_caixa_coringafuncionario_fechamento: TStringField;
+    query_caixa_coringanum_caixa: TIntegerField;
+    query_caixa_coringaoperador: TStringField;
+    query_caixa_coringastatus: TStringField;
+    query_caixa_coringaid: TFDAutoIncField;
+    DSCaixaCoringa: TDataSource;
+    rel_mov_vendas: TfrxReport;
+    rel_DS_Mov_Vendas: TfrxDBDataset;
+    query_det_vendasdata: TDateField;
+    query_vendashora: TTimeField;
+    query_venda_dirhora: TTimeField;
+    query_cor_mov: TFDQuery;
+    query_cor_caixa: TFDQuery;
+    query_cor_ent: TFDQuery;
+    query_cor_resolv: TFDQuery;
+    query_gaveta: TFDQuery;
+    query_gavetaid: TFDAutoIncField;
+    query_gavetanome_pc: TStringField;
+    query_gavetanome_compartilhamento: TStringField;
+    tb_gaveta: TFDTable;
+    DSGaveta: TDataSource;
+    tb_registro: TFDTable;
+    DSRegistro: TDataSource;
+    tb_registrocod_liberacao: TStringField;
+    tb_registrodata_vencimento: TDateField;
+    tb_registroultimo_acesso: TDateField;
+    tb_registrocodigo: TStringField;
+    DS_Rel_Canc: TfrxDBDataset;
+    rel_comprovante_canc: TfrxReport;
+    query_canc: TFDQuery;
+    query_cancid: TFDAutoIncField;
+    query_canctipo: TStringField;
+    query_cancmovimento: TStringField;
+    query_cancdesconto: TBCDField;
+    query_cancvalor: TBCDField;
+    query_cancmetodo: TStringField;
+    query_cancstatus: TStringField;
+    query_cancvalor_pago: TBCDField;
+    query_canctroco: TBCDField;
+    query_cancfuncionario: TStringField;
+    query_cancdata: TDateField;
+    query_canchora: TTimeField;
+    query_cancid_movimento: TIntegerField;
+    query_produtoscusto: TBCDField;
+    query_produtosmargem_lucro: TBCDField;
+    query_produtosquantidade: TFloatField;
+    query_cor_produtos: TFDQuery;
+    query_det_vendasmov: TStringField;
+    query_det_vendasproduto: TStringField;
+    query_det_vendas_dirid: TFDAutoIncField;
+    query_det_vendas_dirid_venda: TIntegerField;
+    query_det_vendas_dirproduto: TStringField;
+    query_det_vendas_dirvalor: TBCDField;
+    query_det_vendas_dirquantidade: TIntegerField;
+    query_det_vendas_dirtotal: TBCDField;
+    query_det_vendas_dirid_produto: TIntegerField;
+    query_det_vendas_dirfuncionario: TStringField;
+    query_det_vendas_dirdata: TDateField;
+    Rel_abertura: TfrxReport;
+    tb_retirada: TFDTable;
+    query_retirada: TFDQuery;
+    DSRetirada: TDataSource;
+    rel_retirada: TfrxDBDataset;
+    query_canc2: TFDQuery;
+    query_produtosestoque_min: TIntegerField;
+    rel_DS_Estoque: TfrxDBDataset;
+    rel_Estoque: TfrxReport;
+    query_det_vendascod_exc: TIntegerField;
+    query_entrada_profornecedor: TStringField;
+    query_entrada_profuncionario: TStringField;
+    query_entrada_proid: TFDAutoIncField;
+    query_det_entradas: TFDQuery;
+    DS_det_entradas: TDataSource;
+    tb_det_entradas: TFDTable;
+    query_det_entradasid: TFDAutoIncField;
+    query_det_entradasid_entrada: TIntegerField;
+    query_det_entradasproduto: TStringField;
+    query_det_entradasquantidade: TIntegerField;
+    query_det_entradasfuncionario: TStringField;
+    query_det_entradasid_produto: TIntegerField;
+    procedure DataModuleCreate(Sender: TObject);
+    procedure fdBeforeConnect(Sender: TObject);
+    procedure FDPhysMySQLDriverLink1DriverCreated(Sender: TObject);
+    procedure FDPhysMySQLDriverLink1DriverDestroying(Sender: TObject);
+    procedure fdAfterConnect(Sender: TObject);
+    procedure fd2BeforeConnect(Sender: TObject);
+    procedure fd2AfterConnect(Sender: TObject);
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  dm: Tdm;
+
+  //DECLARAÇÃO DAS VARIÁVEIS GLOBAIS
+
+  idFunc : string;
+  nomeFunc : string;
+  cargoFunc :string;
+    (*  *)
+
+
+  nomeUsuario : string;
+  cargoUsuario : string;
+
+  codigoProduto : string;
+
+  idFornecedor : string;
+  nomeFornecedor :string;
+
+  idProduto :string;
+  nomeProduto : string;
+  estoqueProduto : double;
+
+   codProduto : string;
+
+   totalProdutos : double;
+
+   estoqueCancel:double;
+
+
+   pagamentoo: string;
+   pagamentodirr : string;
+
+   certificadoDig: string;
+
+   //chamadas
+   vdChamada : string;
+   vendaChamada :string;
+   chamada : string;
+   chamadaPagamento: string;
+
+
+
+   //NOTA FISCAL
+   //DADOS EMITENTE;
+   cnpj : string;
+   ie :string; //indice estadual
+   nome :string;
+   fantasia :string;
+   tel :string;
+   cep :integer;
+   logr :string;
+   num :string;
+   compl :string;
+   bairro : string;
+   codcid : integer;
+   cidade :string;
+   uf :string;
+   tpemp :string;
+
+   //CAIXA
+   statusCaixa :string;
+   numCaixa : string;
+   areaAdministrativa : string;
+
+   //FILTRAR RELATORIO
+   rel :string;
+
+   //Exclusao em ferramentas
+   excluir : string;
+
+
+
+   //segurança
+   hd : string;
+
+   teste : string;
+
+
+   //Gaveta
+    nomePc : string;
+    nomeCompartilhamento :string;
+
+
+    //VENDA DIRETA EMBUTIDA
+    Embutida : string;
+    totalItememb :double;
+    totalVendaemb :double;
+    produtoemb : string;
+
+    //Buscando Produto na tabela de produtos
+    dadosProdutos : string;
+
+    buscarProd : string;
+    nomeProd : string;
+    valorProd :string;
+    estoqueProd : string;
+    estoqueproddd : double;
+    descProd : string;
+    confirm : string;
+
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+uses Produtos;
+
+{$R *.dfm}
+
+procedure Tdm.DataModuleCreate(Sender: TObject);
+begin
+fd.Connected := true;
+
+end;
+
+procedure Tdm.fd2AfterConnect(Sender: TObject);
+begin
+//dm.tb_registro.Active := true;
+end;
+
+procedure Tdm.fd2BeforeConnect(Sender: TObject);
+var
+caminho : string;
+begin
+   caminho := GetCurrentDir + '\lib\libmySQL.dll';
+FDPhysMySQLDriverLink1.VendorLib := caminho;
+
+
+(*tb_cargos.TableName := 'cargos';
+tb_caixa.TableName := 'caixa';
+tb_usuarios.TableName := 'usuarios';
+tb_comprovante.TableName := 'dados_comprovante';
+tb_dados_emitente.TableName := 'dados_emitente';
+tb_detalhes_vendas.TableName := 'detalhes_vendas';
+tb_det_vendas_dir.TableName := 'detalhes_vendas_direta';
+tb_entrada_pro.TableName := 'entrada_produtos';
+tb_forn.TableName := 'fornecedores';
+tb_func.TableName := 'funcionarios';
+tb_gastos.TableName := 'gastos';
+tb_gaveta.TableName := 'gaveta';
+tb_mov.TableName := 'movimentacoes';
+tb_produtos.TableName := 'produtos';
+
+tb_registro.TableName := 'registro';
+tb_saida_pro.TableName := 'saida_produtos';
+tb_vendas.TableName := 'vendas';
+tb_venda_dir.TableName := 'vendas_direta';
+                                            *)
+end;
+
+procedure Tdm.fdAfterConnect(Sender: TObject);
+begin
+
+
+dm.tb_registro.Active := true;
+
+end;
+
+procedure Tdm.fdBeforeConnect(Sender: TObject);
+var
+caminho : string;
+begin
+   caminho := GetCurrentDir + '\lib\libmySQL.dll';
+FDPhysMySQLDriverLink1.VendorLib := caminho;
+
+
+tb_cargos.TableName := 'cargos';
+tb_caixa.TableName := 'caixa';
+tb_usuarios.TableName := 'usuarios';
+tb_comprovante.TableName := 'dados_comprovante';
+tb_dados_emitente.TableName := 'dados_emitente';
+tb_detalhes_vendas.TableName := 'detalhes_vendas';
+tb_det_vendas_dir.TableName := 'detalhes_vendas_direta';
+tb_entrada_pro.TableName := 'entrada_produtos';
+tb_forn.TableName := 'fornecedores';
+tb_func.TableName := 'funcionarios';
+tb_gastos.TableName := 'gastos';
+tb_gaveta.TableName := 'gaveta';
+tb_mov.TableName := 'movimentacoes';
+tb_produtos.TableName := 'produtos';
+tb_retirada.TableName := 'retirada_caixa';
+tb_registro.TableName := 'registro';
+tb_saida_pro.TableName := 'saida_produtos';
+tb_vendas.TableName := 'vendas';
+tb_venda_dir.TableName := 'vendas_direta';
+
+
+
+end;
+
+procedure Tdm.FDPhysMySQLDriverLink1DriverCreated(Sender: TObject);
+var
+caminho : string;
+begin
+  caminho := GetCurrentDir + '\lib\libmySQL.dll';
+  FDPhysMySQLDriverLink1.VendorLib := caminho;
+
+end;
+
+procedure Tdm.FDPhysMySQLDriverLink1DriverDestroying(Sender: TObject);
+begin
+
+fd.Connected := false;
+
+end;
+
+end.

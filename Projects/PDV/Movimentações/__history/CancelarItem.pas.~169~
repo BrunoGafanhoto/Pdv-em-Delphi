@@ -1,0 +1,489 @@
+unit CancelarItem;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TFrmCancelarItem = class(TForm)
+    edtIdItem: TEdit;
+    Label1: TLabel;
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edtIdItemKeyPress(Sender: TObject; var Key: Char);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmCancelarItem: TFrmCancelarItem;
+  estoque :double;
+  quantidade :double;
+
+
+
+
+implementation
+
+{$R *.dfm}
+
+uses Modulo, Vendas;
+
+procedure TFrmCancelarItem.edtIdItemKeyPress(Sender: TObject; var Key: Char);
+begin
+if not (Key in ['0'..'9',#8,#13]) then
+Key := '0';
+end;
+
+procedure TFrmCancelarItem.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+ if vendaChamada = 'normal' then
+   begin
+
+        if key = 13 then
+         begin
+          if (trim(EdtIdItem.text) = '') then
+            begin
+              MessageDlg('Insira o código do item!' , mtInformation, mbOKCancel,0);
+              EdtIdItem.Text := '';
+              EdtIdItem.SetFocus;
+              exit;
+            end;
+
+      if MessageDlg('Deseja Excluir o Registro?', mtConfirmation, [mbYes,mbNo],0) = mrYes then
+    //Confirmation pq é uma pergunta. mbyes e mbno, são os dois botoes de escolha. mryes = resposta do usuario
+        begin
+
+
+            //RECUPERAR A QUANTIDADE,VALOR E ID DO PRODUTO DO ITEM EXCUIDO
+
+         dm.query_coringa.Close;
+         dm.query_coringa.SQL.Clear;
+         dm.query_coringa.SQL.Add('select * from detalhes_vendas where id_venda = 0 and cod_exc = :codigo');
+         dm.query_coringa.ParamByName('codigo').Value := edtIdItem.Text;
+         dm.query_coringa.Open;
+
+         if dm.query_coringa['id_venda'] = 0 then
+         begin
+         if not dm.query_coringa.IsEmpty then
+          begin
+
+            quantidade := dm.query_coringa.FieldByName('quantidade').Value;
+            totalProdutos := dm.query_coringa.FieldByName('total').Value;
+            idProduto := dm.query_coringa.FieldByName('id_produto').Value;
+            end;
+
+         end
+          else
+            begin
+            MessageDlg('Produto não listado!', mtInformation, mbOKCancel,0);
+            edtIdItem.Text := '';
+               edtIdItem.SetFocus;
+               exit;
+            end;
+
+             //RECUPERAR O ESTOQUE DO PRODUTO
+         dm.query_produtos.Close;
+         dm.query_produtos.SQL.Clear;
+         dm.query_produtos.SQL.Add('select * from produtos where id = :id');
+         dm.query_produtos.ParamByName('id').Value := idProduto;
+         dm.query_produtos.Open;
+
+
+         if not dm.query_produtos.IsEmpty then
+          begin
+
+            estoque := dm.query_produtos.FieldByName('estoque').Value;
+
+            end;
+
+
+
+
+          //RECUPERAR O ESTOQUE DO ITEM CANCELADO
+            estoque := estoque + quantidade;
+
+            dm.query_produtos.Close;
+            dm.query_produtos.SQL.Clear;
+            dm.query_produtos.SQL.Add('UPDATE PRODUTOS set estoque = :estoque where id = :id');
+            dm.query_produtos.ParamByName('estoque').value := estoque;
+            dm.query_produtos.ParamByName('id').value := idProduto;
+            dm.query_produtos.ExecSQL;
+
+              try
+
+               dm.query_coringa.Close;
+               dm.query_coringa.SQL.clear;
+               dm.query_coringa.SQL.Add('DELETE FROM detalhes_vendas where id_venda = 0 and cod_exc = :id');
+               dm.query_coringa.ParamByName('id').Value := edtIdItem.Text; // informando os parametros a passar para cargo e o que comparar com id
+               // passando parametro e esse id no final vem da variavel no inicio do cod
+               dm.query_coringa.Execute;
+
+               MessageDlg('Excluido com Sucesso!', mtInformation, mbOKCancel,0);
+               if totalcomDesconto = 0 then
+                begin
+                  conversor := 0;
+                end;
+               close;
+               
+
+                estoqueCancel := estoque;
+                estoque := 0;
+                quantidade := 0;
+                totalProdutos := 0;
+                vendaChamada := '';
+
+            except
+
+               MessageDlg('Código do produto inválido!', mtInformation, mbOKCancel,0);
+               edtIdItem.Text := '';
+               edtIdItem.SetFocus;
+               exit;
+
+            end;
+       end;
+
+     end;
+   end;
+
+
+   if entradaChamada = 'entradaa' then
+   begin
+
+        if key = 13 then
+         begin
+          if (trim(EdtIdItem.text) = '') then
+            begin
+              MessageDlg('Insira o código do item!' , mtInformation, mbOKCancel,0);
+              EdtIdItem.Text := '';
+              EdtIdItem.SetFocus;
+              exit;
+            end;
+
+      if MessageDlg('Deseja Excluir o Registro?', mtConfirmation, [mbYes,mbNo],0) = mrYes then
+    //Confirmation pq é uma pergunta. mbyes e mbno, são os dois botoes de escolha. mryes = resposta do usuario
+        begin
+
+
+            //RECUPERAR A QUANTIDADE,VALOR E ID DO PRODUTO DO ITEM EXCUIDO
+
+         dm.query_coringa.Close;
+         dm.query_coringa.SQL.Clear;
+         dm.query_coringa.SQL.Add('select * from detalhes_entradas where id_entrada = 0 and cod_exc = :codigo');
+         dm.query_coringa.ParamByName('codigo').Value := edtIdItem.Text;
+         dm.query_coringa.Open;
+
+         if dm.query_coringa['id_entrada'] = 0 then
+         begin
+         if not dm.query_coringa.IsEmpty then
+          begin
+
+            quantidade := dm.query_coringa.FieldByName('quantidade').Value;
+            //totalProdutos := dm.query_coringa.FieldByName('total').Value;
+            idProduto := dm.query_coringa.FieldByName('id_produto').Value;
+            end;
+
+         end
+          else
+            begin
+            MessageDlg('Produto não listado!', mtInformation, mbOKCancel,0);
+            edtIdItem.Text := '';
+               edtIdItem.SetFocus;
+               exit;
+            end;
+
+             //RECUPERAR O ESTOQUE DO PRODUTO
+         dm.query_produtos.Close;
+         dm.query_produtos.SQL.Clear;
+         dm.query_produtos.SQL.Add('select * from produtos where id = :id');
+         dm.query_produtos.ParamByName('id').Value := idProduto;
+         dm.query_produtos.Open;
+
+
+         if not dm.query_produtos.IsEmpty then
+          begin
+
+            estoque := dm.query_produtos.FieldByName('estoque').Value;
+
+            end;
+
+
+
+
+          //RECUPERAR O ESTOQUE DO ITEM CANCELADO
+            estoque := estoque - quantidade;
+
+            dm.query_produtos.Close;
+            dm.query_produtos.SQL.Clear;
+            dm.query_produtos.SQL.Add('UPDATE PRODUTOS set estoque = :estoque where id = :id');
+            dm.query_produtos.ParamByName('estoque').value := estoque;
+            dm.query_produtos.ParamByName('id').value := idProduto;
+            dm.query_produtos.ExecSQL;
+
+              try
+
+               dm.query_coringa.Close;
+               dm.query_coringa.SQL.clear;
+               dm.query_coringa.SQL.Add('DELETE FROM detalhes_entradas where id_entrada = 0 and cod_exc = :id');
+               dm.query_coringa.ParamByName('id').Value := edtIdItem.Text; // informando os parametros a passar para cargo e o que comparar com id
+               // passando parametro e esse id no final vem da variavel no inicio do cod
+               dm.query_coringa.Execute;
+
+               MessageDlg('Excluido com Sucesso!', mtInformation, mbOKCancel,0);
+               (*if totalcomDesconto = 0 then
+                begin
+                  conversor := 0;
+                end; *)
+
+               CloseModal;
+
+
+               //
+                     entradaChamada := '';
+               //estoqueCancel := estoque;
+                estoque := 0;
+                quantidade := 0;
+                totalProdutos := 0;
+
+
+            except
+
+               MessageDlg('Código do produto inválido!', mtInformation, mbOKCancel,0);
+               edtIdItem.Text := '';
+               edtIdItem.SetFocus;
+               exit;
+
+            end;
+       end;
+
+     end;
+   end;
+
+
+   if vendaChamada = 'ent' then
+   begin
+
+        if key = 13 then
+         begin
+          if (trim(EdtIdItem.text) = '') then
+            begin
+              MessageDlg('Insira o código do item!' , mtInformation, mbOKCancel,0);
+              EdtIdItem.Text := '';
+              EdtIdItem.SetFocus;
+              exit;
+            end;
+
+      if MessageDlg('Deseja Excluir o Registro?', mtConfirmation, [mbYes,mbNo],0) = mrYes then
+    //Confirmation pq é uma pergunta. mbyes e mbno, são os dois botoes de escolha. mryes = resposta do usuario
+        begin
+
+
+            //RECUPERAR A QUANTIDADE,VALOR E ID DO PRODUTO DO ITEM EXCUIDO
+
+         dm.query_coringa.Close;
+         dm.query_coringa.SQL.Clear;
+         dm.query_coringa.SQL.Add('select * from detalhes_vendas where id_venda = 0 and cod_exc = :codigo');
+         dm.query_coringa.ParamByName('codigo').Value := edtIdItem.Text;
+         dm.query_coringa.Open;
+
+         if dm.query_coringa['id_venda'] = 0 then
+         begin
+         if not dm.query_coringa.IsEmpty then
+          begin
+
+            quantidade := dm.query_coringa.FieldByName('quantidade').Value;
+            totalProdutos := dm.query_coringa.FieldByName('total').Value;
+            idProduto := dm.query_coringa.FieldByName('id_produto').Value;
+            end;
+
+         end
+          else
+            begin
+            MessageDlg('Produto não listado!', mtInformation, mbOKCancel,0);
+            edtIdItem.Text := '';
+               edtIdItem.SetFocus;
+               exit;
+            end;
+
+             //RECUPERAR O ESTOQUE DO PRODUTO
+         dm.query_produtos.Close;
+         dm.query_produtos.SQL.Clear;
+         dm.query_produtos.SQL.Add('select * from produtos where id = :id');
+         dm.query_produtos.ParamByName('id').Value := idProduto;
+         dm.query_produtos.Open;
+
+
+         if not dm.query_produtos.IsEmpty then
+          begin
+
+            estoque := dm.query_produtos.FieldByName('estoque').Value;
+
+            end;
+
+
+
+
+          //RECUPERAR O ESTOQUE DO ITEM CANCELADO
+            estoque := estoque + quantidade;
+
+            dm.query_produtos.Close;
+            dm.query_produtos.SQL.Clear;
+            dm.query_produtos.SQL.Add('UPDATE PRODUTOS set estoque = :estoque where id = :id');
+            dm.query_produtos.ParamByName('estoque').value := estoque;
+            dm.query_produtos.ParamByName('id').value := idProduto;
+            dm.query_produtos.ExecSQL;
+
+              try
+
+               dm.query_coringa.Close;
+               dm.query_coringa.SQL.clear;
+               dm.query_coringa.SQL.Add('DELETE FROM detalhes_vendas where id_venda = 0 and cod_exc = :id');
+               dm.query_coringa.ParamByName('id').Value := edtIdItem.Text; // informando os parametros a passar para cargo e o que comparar com id
+               // passando parametro e esse id no final vem da variavel no inicio do cod
+               dm.query_coringa.Execute;
+
+               MessageDlg('Excluido com Sucesso!', mtInformation, mbOKCancel,0);
+               if totalcomDesconto = 0 then
+                begin
+                  conversor := 0;
+                end;
+               close;
+
+
+                estoqueCancel := estoque;
+                estoque := 0;
+                quantidade := 0;
+                totalProdutos := 0;
+                vendaChamada := '';
+
+            except
+
+               MessageDlg('Código do produto inválido!', mtInformation, mbOKCancel,0);
+               edtIdItem.Text := '';
+               edtIdItem.SetFocus;
+               exit;
+
+            end;
+       end;
+
+     end;
+   end;
+
+
+  if vdChamada = 'direta' then
+    begin
+       if key = 13 then
+          begin
+          if (trim(EdtIdItem.text) = '') then
+            begin
+              MessageDlg('Insira o código do item!' , mtInformation, mbOKCancel,0);
+              EdtIdItem.Text := '';
+              EdtIdItem.SetFocus;
+              exit;
+            end;
+
+          if MessageDlg('Deseja Excluir o Registro?', mtConfirmation, [mbYes,mbNo],0) = mrYes then
+        //Confirmation pq é uma pergunta. mbyes e mbno, são os dois botoes de escolha. mryes = resposta do usuario
+            begin
+
+                //RECUPERAR A QUANTIDADE,VALOR E ID DO PRODUTO DO ITEM EXCUIDO
+
+             dm.query_coringa.Close;
+             dm.query_coringa.SQL.Clear;
+             dm.query_coringa.SQL.Add('select * from detalhes_vendas_direta where id_venda = 0 and id = :codigo');
+             dm.query_coringa.ParamByName('codigo').Value := edtIdItem.Text;
+             dm.query_coringa.Open;
+
+
+                 if dm.query_coringa['id_venda'] = 0 then
+             begin
+             if not dm.query_coringa.IsEmpty then
+              begin
+
+                quantidade := dm.query_coringa.FieldByName('quantidade').Value;
+                totalProdutos := dm.query_coringa.FieldByName('total').Value;
+                idProduto := dm.query_coringa.FieldByName('id_produto').Value;
+                end;
+
+             end
+              else
+                begin
+                MessageDlg('Produto não listado!', mtInformation, mbOKCancel,0);
+                edtIdItem.Text := '';
+                   edtIdItem.SetFocus;
+                   exit;
+                end;
+
+
+
+
+                //RECUPERAR O ESTOQUE DO PRODUTO
+             dm.query_produtos.Close;
+             dm.query_produtos.SQL.Clear;
+             dm.query_produtos.SQL.Add('select * from produtos where id = :id');
+             dm.query_produtos.ParamByName('id').Value := idProduto;
+             dm.query_produtos.Open;
+
+
+             if not dm.query_produtos.IsEmpty then
+              begin
+
+                estoque := dm.query_produtos.FieldByName('estoque').Value;
+
+                end;
+
+
+              //RECUPERAR O ESTOQUE DO ITEM CANCELADO
+                estoque := estoque + quantidade;
+
+                dm.query_produtos.Close;
+                dm.query_produtos.SQL.Clear;
+                dm.query_produtos.SQL.Add('UPDATE PRODUTOS set estoque = :estoque where id = :id');
+                dm.query_produtos.ParamByName('estoque').value := estoque;
+                dm.query_produtos.ParamByName('id').value := idProduto;
+                dm.query_produtos.ExecSQL;
+
+                  try
+
+                   dm.query_coringa.Close;
+                   dm.query_coringa.SQL.clear;
+                   dm.query_coringa.SQL.Add('DELETE FROM detalhes_vendas_direta where id_venda = 0 and   id = :id ');
+                   dm.query_coringa.ParamByName('id').Value := edtIdItem.Text; // informando os parametros a passar para cargo e o que comparar com id
+                   // passando parametro e esse id no final vem da variavel no inicio do cod
+                   dm.query_coringa.Execute;
+
+
+
+
+
+                   MessageDlg('Excluido com Sucesso!', mtInformation, mbOKCancel,0);
+                   close;
+                    estoqueCancel := estoque;
+                    estoque := 0;
+                    quantidade := 0;
+                    totalProdutos := 0;
+                    vdChamada := '';
+
+
+
+                except
+
+                   MessageDlg('Código do produto inválido!', mtInformation, mbOKCancel,0);
+                   edtIdItem.Text := '';
+                   edtIdItem.SetFocus;
+                   exit;
+
+
+                end;
+          end;
+end;
+
+    end;
+
+end;
+
+end.
